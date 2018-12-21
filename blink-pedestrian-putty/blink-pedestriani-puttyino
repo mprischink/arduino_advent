@@ -1,0 +1,69 @@
+int LEDS[] = {12,11,10,8,7};
+
+int AUTO_ROT = 0;
+int AUTO_GELB = 1;
+int AUTO_GRUEN = 2;
+
+int PERSON_ROT = 3;
+int PERSON_GRUEN = 4;
+
+int PIN_IN = 2;
+
+void setup() {
+  Serial.begin(9600); // for Serial.print
+  for(int i=0; i < (sizeof(LEDS) / sizeof(LEDS[0])); i++){
+    pinMode(LEDS[i], OUTPUT);
+  }
+  pinMode(PIN_IN, INPUT);
+}
+
+void loop() {
+  int time_gelb = 1500;
+  int time_gruen = 1500;
+  int time_blink = 500;
+  int time_rot = 3000;
+  int time_between = 1000;
+  int no_blink= 4;
+
+  int inp = analogRead(PIN_IN);
+
+  digitalWrite(LEDS[PERSON_ROT], HIGH);
+
+  digitalWrite(LEDS[AUTO_GRUEN], HIGH);
+
+  while ( (inp = analogRead(PIN_IN)) != HIGH){}
+
+  // green to off
+  delay(time_gruen);
+  digitalWrite(LEDS[AUTO_GRUEN], LOW);
+
+  // blink
+  for(int i = 0; i < no_blink; i++) {
+    digitalWrite(LEDS[AUTO_GRUEN], HIGH);
+    delay(time_blink);
+    digitalWrite(LEDS[AUTO_GRUEN], LOW);
+    delay(time_blink);
+  }
+
+  // gelb
+  digitalWrite(LEDS[AUTO_GELB], HIGH);
+  delay(time_gelb);
+  digitalWrite(LEDS[AUTO_GELB], LOW);
+
+  // auto rot & person gruen
+  digitalWrite(LEDS[AUTO_ROT], HIGH);
+  digitalWrite(LEDS[PERSON_ROT], LOW);
+  digitalWrite(LEDS[PERSON_GRUEN], HIGH);
+  delay(time_rot - time_gelb);
+
+  digitalWrite(LEDS[PERSON_GRUEN], LOW);
+  digitalWrite(LEDS[PERSON_ROT], HIGH);
+  delay(time_between);
+
+  // rot/gelb
+  digitalWrite(LEDS[AUTO_GELB], HIGH);
+  delay(time_gelb);
+  digitalWrite(LEDS[AUTO_ROT], LOW);
+  digitalWrite(LEDS[AUTO_GELB], LOW);
+
+}
